@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'soma1999/ci-cd-app:latest'
+        KUBECONFIG = '/var/lib/jenkins/.kube/config'
     }
 
     stages {
