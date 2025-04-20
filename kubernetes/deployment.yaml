@@ -16,4 +16,4 @@ spec:
         - name: ci-cd-app
           image: soma1999/devops-ci-cd-project:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 4000

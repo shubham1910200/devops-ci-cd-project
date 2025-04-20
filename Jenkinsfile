@@ -1,35 +1,40 @@
 pipeline {
     agent any
+
     environment {
         IMAGE_NAME = 'soma1999/ci-cd-app:latest'
-
     }
+
     stages {
         stage('Clone') {
             steps {
                 git branch: 'main', url: 'https://github.com/shubham1910200/devops-ci-cd-project.git'
             }
         }
-    stage('Build Docker Image') {
-        steps {
-            script {
+
+        stage('Build Docker Image') {
+            steps {
                 sh 'docker build -t $IMAGE_NAME .'
             }
         }
-    }
-    stage('Push to Docker Hub') {
-        steps {
+
+        stage('Push to Docker Hub') {
+            steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    sh 'docker push $DOCKER_IMAGE'
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push $IMAGE_NAME
+                    '''
                 }
             }
-    }
-    stage('Deploy to Kubernetes') {
-        steps {
-            sh 'kubectl apply -f kubernetes/deployment.yaml'
-            sh 'kubectl apply -f kubernetes/service.yaml'
         }
-    }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f kubernetes/deployment.yaml'
+                sh 'kubectl apply -f kubernetes/service.yaml'
+                sh 'kubectl rollout status deployment/your-deployment-name'  // Optionally add status check
+            }
+        }
     }
 }
