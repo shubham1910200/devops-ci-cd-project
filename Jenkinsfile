@@ -34,18 +34,14 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                echo 'Deploying to Kubernetes cluster...'
-                withCredentials([file(credentialsId: 'kubeconfig-creds', variable: 'KUBECONFIG')]) {
-                    
-                
-                sh 'kubectl apply -f kubernetes/deployment.yaml --insecure-skip-tls-verify'
-                sh 'kubectl apply -f kubernetes/service.yaml'
+       stage('Deploy to Kubernetes') {
+    steps {
+        echo 'Deploying to Kubernetes cluster...'
+        sh 'kubectl apply -f kubernetes/deployment.yaml --insecure-skip-tls-verify --validate=false'
+        sh 'kubectl apply -f kubernetes/service.yaml --insecure-skip-tls-verify --validate=false'
+    }
+}
 
-                }
-            }
-        }
     }
 
     post {
