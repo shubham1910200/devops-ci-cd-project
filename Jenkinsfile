@@ -39,7 +39,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'kubeconfig-creds', variable: 'KUBECONFIG')]) {
                     
                 
-                sh 'kubectl apply -f kubernetes/deployment.yaml'
+                sh 'kubectl apply -f kubernetes/deployment.yaml --insecure-skip-tls-verify'
                 sh 'kubectl apply -f kubernetes/service.yaml'
 
                 }
