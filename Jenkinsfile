@@ -30,16 +30,13 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-                    sh '''
-                        export KUBECONFIG=$KUBECONFIG_FILE
-                        kubectl apply -f kubernetes/deployment.yaml
-                        kubectl apply -f kubernetes/service.yaml
-                        kubectl rollout status deployment/todo-deployment
-                    '''
-                }
+           
+           steps {
+            script {
+                kubernetesDeploy(configs:"kubernetes/deployment.yaml", kubeconfigId: 'kubernetes')
+                kubernetesDeploy(configs:"kubernetes/service.yaml", kubeconfigId: 'kubernetes')
             }
+           }
         }
     }
 }
