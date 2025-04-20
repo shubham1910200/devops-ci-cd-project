@@ -29,14 +29,17 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-           
-           steps {
-            script {
-                kubernetesDeploy(configs:"kubernetes/deployment.yaml", kubeconfigId: 'kubernetes')
-                kubernetesDeploy(configs:"kubernetes/service.yaml", kubeconfigId: 'kubernetes')
-            }
-           }
-        }
+       stage('Deploy to Kubernetes') {
+  steps {
+    script {
+      kubernetesDeploy(
+        configs: 'kubernetes/deployment.yaml',
+        kubeconfigId: 'kubeconfig-jenkins'
+      )
+    }
+  }
+}
+
+
     }
 }
